@@ -1,19 +1,18 @@
 import { useState } from 'react'
 import { api } from '../api.js'
-import { ActionButton, Check, Heading, Loaded, formatMoney, useLoad } from '../panel/ui.jsx'
+import { Badge } from '@/ui/badge'
+import { ActionButton, Actions, Check, ConfirmButton, DataTable, Empty, Heading, Loaded, formatMoney, useLoad } from '../panel/ui.jsx'
 
 export const Status = ({ row }) => (
-  <>
-    <span className={row.active ? 'tag on' : 'tag'}>{row.active ? 'Active' : 'Inactive'}</span>{' '}
-    {row.stock === 0 && <span className="tag">Sold out</span>}
-  </>
+  <span className="tw:flex tw:flex-wrap tw:justify-end tw:gap-1">
+    <Badge variant={row.active ? 'secondary' : 'outline'}>{row.active ? 'Active' : 'Inactive'}</Badge>
+    {row.stock === 0 && <Badge variant="outline">Sold out</Badge>}
+  </span>
 )
-
-export const Thumb = ({ url }) => (url ? <img src={url} alt="" /> : null)
 
 export const priceCell = (row) => formatMoney(row.priceCents)
 
-// Shared list for products and accessories: archived toggle, archive/restore, edit hook.
+// Shared list for products and accessories: archived toggle, archive (confirmed) / restore, edit hook.
 // `endpoint` is e.g. '/admin/products'; `listKey` the response key; `action` the heading button; `edit` renders the row's edit control.
 export default function Catalog({ title, endpoint, listKey, columns, action, edit, reloadKey }) {
   const [archived, setArchived] = useState(false)
@@ -25,36 +24,32 @@ export default function Catalog({ title, endpoint, listKey, columns, action, edi
   return (
     <>
       <Heading action={action}>{title}</Heading>
-      <Check label="Show archived" checked={archived} onChange={(e) => setArchived(e.target.checked)} />
+      <Check label="Show archived" checked={archived} onChange={setArchived} />
       <Loaded load={load}>
         {(data) => {
           const rows = data[listKey]
           return rows.length ? (
-            <div className="table-wrap">
-              <table className="table">
-                <thead>
-                  <tr>
-                    {columns.map((c) => <th key={c.label}>{c.label}</th>)}
-                    <th><span className="sr-only">Actions</span></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row) => (
-                    <tr key={row.id}>
-                      {columns.map((c) => <td key={c.label} data-label={c.label}>{c.cell(row)}</td>)}
-                      <td>
-                        <div className="actions">
-                          {edit(row)}
-                          <ActionButton className="pill pill-sm" action={toggle(row)}>{archived ? 'Restore' : 'Archive'}</ActionButton>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <DataTable
+              columns={columns}
+              rows={rows}
+              actions={(row) => (
+                <Actions>
+                  {edit(row)}
+                  {archived ? (
+                    <ActionButton action={toggle(row)}>Restore</ActionButton>
+                  ) : (
+                    <ConfirmButton
+                      label="Archive"
+                      title={`Archive ${row.name}?`}
+                      description="It disappears from the storefront. You can restore it from the archived list."
+                      action={toggle(row)}
+                    />
+                  )}
+                </Actions>
+              )}
+            />
           ) : (
-            <p className="panel-empty">{archived ? 'Nothing archived.' : 'Nothing here yet.'}</p>
+            <Empty>{archived ? 'Nothing archived.' : 'Nothing here yet.'}</Empty>
           )
         }}
       </Loaded>

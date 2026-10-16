@@ -10,7 +10,7 @@ export const NAV = {
     { label: 'Colorways', href: '#colorways' },
     { label: 'Farm', href: '#farm' },
   ],
-  cta: { label: 'Shop the collection', href: '#collections' },
+  cta: { label: 'Shop the collection', href: '/products' },
   menu: 'Menu',
   close: 'Close',
 }
@@ -54,8 +54,8 @@ export const COLLECTIONS = {
   eyebrow: 'Our collection',
   title: 'Two ways to carry the harvest.',
   items: [
-    { tag: 'Corn charm', title: 'The full cob, with cap and clasp.', photo: '/photos/heirloom.jpg', bg: '/photos/nature-corn-leaf.jpg', cutout: '/cutouts/heirloom.webp', href: '#colorways' },
-    { tag: 'Corn pearl', title: 'Kernels set into a round bead.', photo: '/photos/pearls.jpg', bg: '/photos/nature-dew.jpg', cutout: '/cutouts/pearls.webp', href: '#colorways' },
+    { tag: 'Corn charm', title: 'The full cob, with cap and clasp.', photo: '/photos/heirloom.jpg', bg: '/photos/nature-corn-leaf.jpg', cutout: '/cutouts/heirloom.webp', href: '/products' },
+    { tag: 'Corn pearl', title: 'Kernels set into a round bead.', photo: '/photos/pearls.jpg', bg: '/photos/nature-dew.jpg', cutout: '/cutouts/pearls.webp', href: '/products' },
   ],
 }
 

@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { api, ApiError } from '../api.js'
 import { COLORWAYS } from '../colorways.js'
-import { Field } from '../auth/ui.jsx'
-import { Check, Heading, Loaded, PanelForm, Select, Textarea, fromCents, toCents, useLoad } from '../panel/ui.jsx'
+import { Button } from '@/ui/button'
+import { Check, Field, Fieldset, FormRow, Heading, Loaded, PanelForm, SelectField, Textarea, fromCents, toCents, useLoad } from '../panel/ui.jsx'
 import ImageUploader from './ImageUploader.jsx'
 
 const initial = (p) => ({
@@ -24,8 +24,8 @@ function Form({ product, accessories }) {
   const navigate = useNavigate()
   const [form, setForm] = useState(initial(product))
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
-  const toggleAccessory = (id) => (e) =>
-    setForm((f) => ({ ...f, accessoryIds: e.target.checked ? [...f.accessoryIds, id] : f.accessoryIds.filter((a) => a !== id) }))
+  const toggleAccessory = (id) => (on) =>
+    setForm((f) => ({ ...f, accessoryIds: on ? [...f.accessoryIds, id] : f.accessoryIds.filter((a) => a !== id) }))
 
   const save = async () => {
     const priceCents = toCents(form.price)
@@ -53,34 +53,34 @@ function Form({ product, accessories }) {
       <Field label="Name" value={form.name} onChange={set('name')} required />
       <Field label="URL slug" value={form.slug} onChange={set('slug')} placeholder="Auto-generated from the name" />
       <Textarea label="Description (optional)" value={form.description} onChange={set('description')} />
-      <div className="panel-row">
-        <Select label="Collection" value={form.collection} onChange={set('collection')}>
-          <option value="charms">Charms</option>
-          <option value="pearls">Pearls</option>
-        </Select>
+      <FormRow>
+        <SelectField
+          label="Collection"
+          value={form.collection}
+          onValueChange={(collection) => setForm((f) => ({ ...f, collection }))}
+          options={[{ value: 'charms', label: 'Charms' }, { value: 'pearls', label: 'Pearls' }]}
+        />
         <Field label="Colorway" value={form.colorway} onChange={set('colorway')} list="colorway-ids" pattern="[a-z0-9\-]{1,40}" title="Lowercase letters, digits and hyphens" required />
         <datalist id="colorway-ids">
           {COLORWAYS.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </datalist>
-      </div>
-      <div className="panel-row">
+      </FormRow>
+      <FormRow>
         <Field label="Price (USD)" value={form.price} onChange={set('price')} inputMode="decimal" required />
         <Field label="Stock" type="number" min={0} value={form.stock} onChange={set('stock')} required />
-      </div>
-      <fieldset className="panel-fieldset">
-        <legend>Images (optional: 1 main + up to 4 more)</legend>
+      </FormRow>
+      <Fieldset legend="Images (optional: 1 main + up to 4 more)">
         <ImageUploader images={form.images} onChange={(images) => setForm((f) => ({ ...f, images }))} />
-      </fieldset>
-      <fieldset className="panel-fieldset">
-        <legend>Accessories offered with this product</legend>
+      </Fieldset>
+      <Fieldset legend="Accessories offered with this product">
         {accessories.length ? (
           accessories.map((a) => <Check key={a.publicId} label={a.name} checked={form.accessoryIds.includes(a.publicId)} onChange={toggleAccessory(a.publicId)} />)
         ) : (
           <p>No accessories yet.</p>
         )}
-      </fieldset>
-      <Check label="Active (visible on the storefront)" checked={form.active} onChange={(e) => setForm((f) => ({ ...f, active: e.target.checked }))} />
-      <button type="button" className="pill" onClick={() => navigate('/admin/products')}>Cancel</button>
+      </Fieldset>
+      <Check label="Active (visible on the storefront)" checked={form.active} onChange={(active) => setForm((f) => ({ ...f, active }))} />
+      <Button type="button" variant="outline" className="tw:self-start" onClick={() => navigate('/admin/products')}>Cancel</Button>
     </PanelForm>
   )
 }

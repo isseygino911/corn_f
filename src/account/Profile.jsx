@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { api } from '../api.js'
 import { useAuth } from '../auth/AuthContext.jsx'
-import { Field } from '../auth/ui.jsx'
-import { Heading, PanelForm } from '../panel/ui.jsx'
+import { Field, Heading, PanelForm } from '../panel/ui.jsx'
 
 export default function Profile() {
   const { user, setUser } = useAuth()

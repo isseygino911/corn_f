@@ -1,0 +1,77 @@
+/* Tailwind for the panels and shop only. Isolation from the landing page:
+   - no preflight (the landing page's own CSS stays the only reset),
+   - every utility carries the `tw:` prefix, so no class name can collide,
+   - theme variables live on `.ui`, not :root. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme) prefix(tw);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(tw);
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+.ui {
+  --background: var(--bg);
+  --foreground: var(--ink);
+  --card: color-mix(in srgb, #fff 55%, var(--bg));
+  --card-foreground: var(--ink);
+  --popover: var(--bg);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--bg);
+  --secondary: color-mix(in srgb, var(--rose) 45%, var(--bg));
+  --secondary-foreground: var(--ink);
+  --muted: color-mix(in srgb, var(--rose) 18%, var(--bg));
+  --muted-foreground: #6b645a;
+  --accent: var(--rose);
+  --accent-foreground: var(--ink);
+  --destructive: #b3261e;
+  --border: color-mix(in srgb, var(--ink) 22%, transparent);
+  --input: color-mix(in srgb, var(--ink) 22%, transparent);
+  --ring: var(--gold);
+  --radius: 1.5rem;
+  font-family: var(--sans);
+  color: var(--ink);
+}
+
+/* Mini reset, scoped to .ui and layered under the utilities (unlayered rules would beat them). */
+@layer base {
+  .ui *, .ui ::before, .ui ::after { box-sizing: border-box; border: 0 solid var(--border); }
+  .ui button, .ui input, .ui select, .ui textarea { font: inherit; color: inherit; letter-spacing: inherit; }
+  .ui button { background: transparent; cursor: pointer; }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --font-sans: var(--sans);
+  --font-mono: var(--mono);
+}
+
+/* Sheet and Dialog animate through tw-animate-css, so turn that off for people who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  .ui, .ui *, [data-slot^="sheet-"], [data-slot^="dialog-"] { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* The landing page sets h1, h2 and p styles globally, and unlayered rules beat the utilities. Hand control back to
+   the utilities inside .ui (revert-layer falls through to the utilities layer). */
+.ui :where(h1, h2) { font-size: revert-layer; font-weight: revert-layer; line-height: revert-layer; letter-spacing: revert-layer; }
+.ui :where(p) { color: revert-layer; }

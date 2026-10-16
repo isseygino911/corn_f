@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
-import Catalog, { Status, Thumb, priceCell } from './Catalog.jsx'
+import { Thumb, linkButton } from '../panel/ui.jsx'
+import Catalog, { Status, priceCell } from './Catalog.jsx'
 
 const mainImage = (p) => p.images?.find((i) => i.isMain)?.url
 
@@ -20,8 +21,8 @@ export default function Products() {
       endpoint="/admin/products"
       listKey="products"
       columns={COLUMNS}
-      action={<Link className="pill pill-solid" to="/admin/products/new">New product</Link>}
-      edit={(p) => <Link className="pill pill-sm" to={`/admin/products/${p.id}`}>Edit</Link>}
+      action={<Link className={linkButton()} to="/admin/products/new">New product</Link>}
+      edit={(p) => <Link className={linkButton({ variant: 'outline', size: 'sm' })} to={`/admin/products/${p.id}`}>Edit</Link>}
     />
   )
 }

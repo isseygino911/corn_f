@@ -18,11 +18,15 @@ import Signup from './auth/Signup.jsx'
 import ForgotPassword from './auth/ForgotPassword.jsx'
 import ResetPassword from './auth/ResetPassword.jsx'
 import VerifyEmail from './auth/VerifyEmail.jsx'
-import AccountRoutes from './account/AccountRoutes.jsx'
-import { ProductList, ProductPage } from './shop/Shop.jsx'
+import { CartProvider } from './cart/CartContext.jsx'
 
-// Admin is a separate chunk: only admins ever download it.
+// Account, admin and the shop (with Tailwind and the UI kit) are separate chunks: the landing never downloads them.
+const AccountRoutes = lazy(() => import('./account/AccountRoutes.jsx'))
 const AdminRoutes = lazy(() => import('./admin/AdminRoutes.jsx'))
+const ProductList = lazy(() => import('./shop/Shop.jsx').then((m) => ({ default: m.ProductList })))
+const ProductPage = lazy(() => import('./shop/Shop.jsx').then((m) => ({ default: m.ProductPage })))
+const Checkout = lazy(() => import('./orders/Checkout.jsx'))
+const OrderPage = lazy(() => import('./orders/OrderPage.jsx'))
 
 const PRELOAD_TIMEOUT_MS = 6000
 
@@ -136,19 +140,25 @@ function Landing() {
 export default function App() {
   return (
     <AuthProvider>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Gate signedIn={false}><Login /></Gate>} />
-        <Route path="/signup" element={<Gate signedIn={false}><Signup /></Gate>} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/account/*" element={<Gate signedIn><AccountRoutes /></Gate>} />
-        <Route path="/admin/*" element={<Gate signedIn admin><Suspense fallback={null}><AdminRoutes /></Suspense></Gate>} />
-        <Route path="/products" element={<ProductList />} />
-        <Route path="/products/:slug" element={<ProductPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <CartProvider>
+        <Suspense fallback={null}>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Gate signedIn={false}><Login /></Gate>} />
+          <Route path="/signup" element={<Gate signedIn={false}><Signup /></Gate>} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/account/*" element={<Gate signedIn><AccountRoutes /></Gate>} />
+          <Route path="/admin/*" element={<Gate signedIn admin><AdminRoutes /></Gate>} />
+          <Route path="/products" element={<ProductList />} />
+          <Route path="/products/:slug" element={<ProductPage />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders/:orderNumber" element={<OrderPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        </Suspense>
+      </CartProvider>
     </AuthProvider>
   )
 }

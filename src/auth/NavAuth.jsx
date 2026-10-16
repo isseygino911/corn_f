@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import { useAuth } from './AuthContext.jsx'
 import SignOutButton from './SignOutButton.jsx'
 
-// Sign in pill, or the user's name (linking to /account) with Sign out. Rendered in the bar and in the mobile menu.
+// Sign in pill, or the user's name (linking to their panel: /admin for admins, else /account) with Sign out. Rendered in the bar and in the mobile menu.
 export default function NavAuth({ onNavigate }) {
   const { user } = useAuth()
   if (user === undefined) return null
@@ -10,8 +10,7 @@ export default function NavAuth({ onNavigate }) {
     <div className="nav-auth">
       {user ? (
         <>
-          {user.isAdmin && <Link to="/admin" onClick={onNavigate}>Admin</Link>}
-          <Link className="nav-user" to="/account" onClick={onNavigate}>{user.name}</Link>
+          <Link className="nav-user" to={user.isAdmin ? '/admin' : '/account'} onClick={onNavigate}>{user.name}</Link>
           <SignOutButton className="pill" onNavigate={onNavigate} />
         </>
       ) : (

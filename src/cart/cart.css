@@ -1,0 +1,4 @@
+/* Cart bag button in the nav (outside .ui, so plain CSS on the landing tokens). */
+.cart-btn { position: relative; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; color: inherit; background: transparent; border: 0; border-radius: 50%; cursor: pointer; }
+.cart-btn:hover { background: color-mix(in srgb, var(--rose) 45%, transparent); color: var(--ink); }
+.cart-badge { position: absolute; top: 0; right: 0; min-width: 18px; height: 18px; padding: 0 5px; display: grid; place-items: center; font: 500 11px/1 var(--mono); color: var(--ink); background: var(--rose); border-radius: 9px; }

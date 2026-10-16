@@ -1,6 +1,19 @@
 import { useState } from 'react'
 import { api } from '../api.js'
-import { Heading, Loaded, useLoad } from '../panel/ui.jsx'
+import { Badge } from '@/ui/badge'
+import { Button } from '@/ui/button'
+import { Input } from '@/ui/input'
+import { Label } from '@/ui/label'
+import { DataTable, Empty, Heading, Loaded, Pager, formatDate, useLoad } from '../panel/ui.jsx'
+
+const COLUMNS = [
+  { label: 'Name', cell: (u) => u.name },
+  { label: 'Email', cell: (u) => u.email },
+  { label: 'Verified', cell: (u) => (u.verified ? 'Yes' : 'No') },
+  { label: 'Sign-in', cell: (u) => u.signInMethod },
+  { label: 'Role', cell: (u) => (u.admin ? <Badge variant="secondary">Admin</Badge> : 'User') },
+  { label: 'Joined', cell: (u) => formatDate(u.createdAt) },
+]
 
 export default function Users() {
   const [q, setQ] = useState('')
@@ -11,7 +24,7 @@ export default function Users() {
     <>
       <Heading>Users</Heading>
       <form
-        className="actions"
+        className="tw:flex tw:flex-wrap tw:items-end tw:gap-2"
         role="search"
         onSubmit={(e) => {
           e.preventDefault()
@@ -19,40 +32,17 @@ export default function Users() {
           setTerm(q.trim())
         }}
       >
-        <label className="field">
-          <span>Search name or email</span>
-          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} />
-        </label>
-        <button className="pill pill-solid">Search</button>
+        <div className="tw:flex tw:min-w-0 tw:flex-1 tw:flex-col tw:gap-2 tw:sm:max-w-sm">
+          <Label htmlFor="user-search">Search name or email</Label>
+          <Input id="user-search" type="search" value={q} onChange={(e) => setQ(e.target.value)} />
+        </div>
+        <Button>Search</Button>
       </form>
       <Loaded load={load}>
         {({ users, total, pageSize }) => (
           <>
-            {!users.length && <p className="panel-empty">No users found.</p>}
-            <div className="table-wrap">
-              <table className="table">
-                <thead>
-                  <tr><th>Name</th><th>Email</th><th>Verified</th><th>Sign-in</th><th>Role</th><th>Joined</th></tr>
-                </thead>
-                <tbody>
-                  {users.map((u) => (
-                    <tr key={u.id}>
-                      <td data-label="Name">{u.name}</td>
-                      <td data-label="Email">{u.email}</td>
-                      <td data-label="Verified">{u.verified ? 'Yes' : 'No'}</td>
-                      <td data-label="Sign-in">{u.signInMethod}</td>
-                      <td data-label="Role">{u.admin ? <span className="tag on">Admin</span> : 'User'}</td>
-                      <td data-label="Joined">{new Date(u.createdAt).toLocaleDateString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="actions">
-              <button type="button" className="pill pill-sm" disabled={page <= 1} onClick={() => setPage(page - 1)}>Previous</button>
-              <span className="tag">Page {page} of {Math.max(1, Math.ceil(total / pageSize))}</span>
-              <button type="button" className="pill pill-sm" disabled={page * pageSize >= total} onClick={() => setPage(page + 1)}>Next</button>
-            </div>
+            {users.length ? <DataTable columns={COLUMNS} rows={users} /> : <Empty>No users found.</Empty>}
+            <Pager page={page} total={total} pageSize={pageSize} onPage={setPage} />
           </>
         )}
       </Loaded>

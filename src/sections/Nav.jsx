@@ -94,11 +94,12 @@ function useMobileMenu(buttonRef, menuRef) {
   }
 }
 
-// Nav is shared with the auth pages, so anchors point at the landing.
-const home = (href) => `/${href}`
+// Nav is shared with the auth pages, so in-page anchors point at the landing; real paths stay as they are.
+const home = (href) => (href.startsWith('#') ? `/${href}` : href)
 const homeCta = { ...NAV.cta, href: home(NAV.cta.href) }
 
-export default function Nav() {
+// `cart` is an optional slot (the shop pages pass the cart button); the landing renders none.
+export default function Nav({ cart }) {
   const ref = useNavTheme()
   const buttonRef = useRef(null)
   const menuRef = useRef(null)
@@ -115,6 +116,7 @@ export default function Nav() {
           ))}
         </ul>
         <div className="nav-actions">
+          {cart}
           <NavAuth />
           <Cta {...homeCta} />
           <button
