@@ -28,13 +28,17 @@
   --border: color-mix(in srgb, var(--ink) 22%, transparent);
   --input: color-mix(in srgb, var(--ink) 22%, transparent);
   --ring: var(--gold);
+  --tint-rose: color-mix(in srgb, var(--rose) 55%, var(--bg));
+  --tint-sand: color-mix(in srgb, var(--gold) 28%, var(--bg));
+  --tint-sage: color-mix(in srgb, var(--moss) 42%, var(--bg));
+  --tint-mist: color-mix(in srgb, var(--slate) 34%, var(--bg));
+  --surface-dark: var(--ink);
   --radius: 1.5rem;
-  font-family: var(--sans);
-  color: var(--ink);
 }
 
 /* Mini reset, scoped to .ui and layered under the utilities (unlayered rules would beat them). */
 @layer base {
+  .ui { font-family: var(--sans); color: var(--ink); }
   .ui *, .ui ::before, .ui ::after { box-sizing: border-box; border: 0 solid var(--border); }
   .ui button, .ui input, .ui select, .ui textarea { font: inherit; color: inherit; letter-spacing: inherit; }
   .ui button { background: transparent; cursor: pointer; }
@@ -59,6 +63,11 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-tint-rose: var(--tint-rose);
+  --color-tint-sand: var(--tint-sand);
+  --color-tint-sage: var(--tint-sage);
+  --color-tint-mist: var(--tint-mist);
+  --color-surface-dark: var(--surface-dark);
   --radius-sm: calc(var(--radius) - 8px);
   --radius-md: calc(var(--radius) - 4px);
   --radius-lg: var(--radius);

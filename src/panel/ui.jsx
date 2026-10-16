@@ -21,6 +21,7 @@ import { Skeleton } from '@/ui/skeleton'
 import { Switch } from '@/ui/switch'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/table'
 import { Textarea as TextareaInput } from '@/ui/textarea'
+import { Surface } from '@/ui/surface'
 import { Toaster } from '@/ui/sonner'
 import '@/ui/ui.css'
 
@@ -42,7 +43,7 @@ export const fromCents = (cents) => (cents / 100).toFixed(2)
 // Router links styled as buttons; the landing page's global underline must not leak in.
 export const linkButton = (options, className) => cn('tw:text-foreground', buttonVariants(options), 'tw:no-underline', className)
 
-const navLink = () => linkButton({ variant: 'ghost' }, 'tw:relative tw:justify-start tw:h-10 tw:px-4 tw:max-[809px]:flex-none tw:hover:bg-transparent')
+const navLink = () => linkButton({ variant: 'ghost' }, 'tw:relative tw:h-10 tw:justify-start tw:px-4 tw:text-primary-foreground tw:hover:bg-primary-foreground/10 tw:hover:text-primary-foreground tw:max-[809px]:flex-none')
 
 // The pill slides between links (shared layoutId); under reduced motion it simply appears.
 function NavItem({ to, label, end }) {
@@ -51,8 +52,8 @@ function NavItem({ to, label, end }) {
     <NavLink to={to} end={end} className={navLink}>
       {({ isActive }) => (
         <>
-          {isActive && <motion.span layoutId="panel-nav-pill" transition={reduced ? { duration: 0 } : { duration: 0.25, ease: 'easeOut' }} className="tw:absolute tw:inset-0 tw:rounded-full tw:bg-primary" />}
-          <span className={`tw:relative ${isActive ? 'tw:text-primary-foreground' : ''}`}>{label}</span>
+          {isActive && <motion.span layoutId="panel-nav-pill" transition={reduced ? { duration: 0 } : { duration: 0.25, ease: 'easeOut' }} className="tw:absolute tw:inset-0 tw:rounded-full tw:bg-primary-foreground" />}
+          <span className={`tw:relative ${isActive ? 'tw:text-primary' : ''}`}>{label}</span>
         </>
       )}
     </NavLink>
@@ -69,18 +70,21 @@ export function PanelShell() {
     <>
       <Nav cart={<CartButton />} />
       <main className="ui tw:mx-auto tw:grid tw:min-h-svh tw:max-w-[1200px] tw:grid-cols-[240px_minmax(0,1fr)] tw:content-start tw:gap-10 tw:px-[var(--gutter)] tw:pt-28 tw:pb-16 tw:max-[809px]:grid-cols-1 tw:max-[809px]:gap-6 tw:max-[809px]:pt-[88px]">
-        <aside className="tw:sticky tw:top-24 tw:flex tw:flex-col tw:items-start tw:gap-5 tw:self-start tw:max-[809px]:static">
-          <h1 className="tw:text-[40px] tw:max-[809px]:text-[34px]">Account</h1>
+        <Surface as="aside" tone="dark" className="tw:sticky tw:top-24 tw:flex tw:flex-col tw:items-start tw:gap-5 tw:max-h-[calc(100svh-7rem)] tw:self-start tw:overflow-y-auto tw:p-5 tw:max-[809px]:static tw:max-[809px]:max-h-none tw:max-[809px]:gap-3 tw:max-[809px]:overflow-visible tw:max-[809px]:p-4">
+          <div className="tw:flex tw:flex-col tw:gap-1 tw:px-2">
+            <span className="tw:font-mono tw:text-xs tw:uppercase tw:text-accent">{user.isAdmin ? 'Admin' : 'Account'}</span>
+            <h1 className="tw:text-[32px] tw:[overflow-wrap:anywhere] tw:max-[809px]:text-[26px]">Hi, {user.name.split(/[ @]/)[0]}</h1>
+          </div>
           {groups.map(({ heading, links }) => (
-            <nav key={heading ?? 'account'} aria-label={heading ?? 'Account'} className="tw:flex tw:flex-col tw:gap-1 tw:self-stretch tw:max-[809px]:flex-row tw:max-[809px]:flex-wrap">
-              {heading && <span className="tw:px-4 tw:pt-2 tw:font-mono tw:text-xs tw:uppercase tw:text-muted-foreground tw:max-[809px]:w-full">{heading}</span>}
+            <nav key={heading ?? 'account'} aria-label={heading ?? 'Account'} className="tw:flex tw:flex-col tw:gap-1 tw:self-stretch tw:max-[809px]:flex-row tw:max-[809px]:flex-nowrap tw:max-[809px]:items-center tw:max-[809px]:overflow-x-auto">
+              {heading && <span className="tw:px-4 tw:pt-2 tw:max-[809px]:pt-0 tw:font-mono tw:text-xs tw:uppercase tw:shrink-0 tw:opacity-60">{heading}</span>}
               {links.map(({ to, label, end }) => (
                 <NavItem key={to} to={to} label={label} end={end} />
               ))}
             </nav>
           ))}
-          <SignOutButton className={buttonVariants({ variant: 'outline' })} />
-        </aside>
+          <SignOutButton className={buttonVariants({ variant: 'invert' })} />
+        </Surface>
         {/* The landing page sets an unlayered `p` colour, so paragraphs here need `!` to use the ink colour. */}
         <motion.section
           key={pathname}
@@ -97,11 +101,12 @@ export function PanelShell() {
   )
 }
 
+// Page title on a tint: rose for the account pages, sand for admin.
 export const Heading = ({ children, action }) => (
-  <header className="tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-3">
+  <Surface as="header" tone={useLocation().pathname.startsWith('/admin') ? 'sand' : 'rose'} className="tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-3 tw:px-6 tw:py-5">
     <h2 className="tw:text-[40px] tw:max-[809px]:text-[34px]">{children}</h2>
     {action}
-  </header>
+  </Surface>
 )
 
 // Loads fn() on mount and whenever deps change; reload() refetches.
@@ -138,6 +143,9 @@ export function Loaded({ load, children }) {
 }
 
 export const Empty = ({ children }) => <p className="tw:py-6">{children}</p>
+
+// White card that holds forms and tables on the panel pages.
+export const Card = ({ className, ...rest }) => <Surface tone="card" className={cn('tw:p-5 tw:md:p-6', className)} {...rest} />
 
 // Label above a control. `id` ties them together.
 export const FieldShell = ({ label, id, className, children }) => (
@@ -271,7 +279,7 @@ export function PanelForm({ submit, onSubmit, children, wide }) {
   })
   return (
     <form
-      className={cn('tw:flex tw:w-full tw:flex-col tw:gap-4', wide ? 'tw:max-w-[720px]' : 'tw:max-w-[480px]')}
+      className={cn('tw:flex tw:w-full tw:flex-col tw:gap-4 tw:rounded-3xl tw:bg-card tw:p-5 tw:md:p-6', wide ? 'tw:max-w-[720px]' : 'tw:max-w-[480px]')}
       onSubmit={(e) => {
         e.preventDefault()
         run()
@@ -294,6 +302,7 @@ const MotionRow = motion.create(TableRow)
 export function DataTable({ columns, rows, rowKey = (r) => r.id, actions }) {
   const reduced = useReducedMotion()
   return (
+    <Card className="tw:p-2 tw:md:p-4">
     <Table className="tw:max-[809px]:block">
       <TableHeader className="tw:max-[809px]:sr-only">
         <TableRow>
@@ -324,6 +333,7 @@ export function DataTable({ columns, rows, rowKey = (r) => r.id, actions }) {
         ))}
       </TableBody>
     </Table>
+    </Card>
   )
 }
 
@@ -337,7 +347,7 @@ export function Pager({ page, total, pageSize, onPage }) {
   const state = (disabled) => ({ href: '#', 'aria-disabled': disabled, className: disabled ? 'tw:pointer-events-none tw:opacity-50' : undefined })
   return (
     <Pagination className="tw:justify-start">
-      <PaginationContent>
+      <PaginationContent className="tw:list-none">
         <PaginationItem>
           <PaginationPrevious {...state(page <= 1)} onClick={go(page - 1, page <= 1)} />
         </PaginationItem>

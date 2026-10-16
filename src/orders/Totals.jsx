@@ -1,7 +1,7 @@
 import { formatMoney } from '../panel/ui.jsx'
 
 const Row = ({ label, cents, strong }) => (
-  <div className={strong ? 'tw:flex tw:justify-between tw:border-t tw:border-border tw:pt-3 tw:text-lg tw:font-medium' : 'tw:flex tw:justify-between'}>
+  <div className={strong ? 'tw:flex tw:justify-between tw:border-t tw:border-current/20 tw:pt-3 tw:text-2xl tw:font-medium' : 'tw:flex tw:justify-between'}>
     <dt>{label}</dt>
     <dd className="tw:m-0">{formatMoney(cents)}</dd>
   </div>

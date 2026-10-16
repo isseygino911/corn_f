@@ -16,7 +16,7 @@ export const Cta = ({ label, href }) => (
   </Link>
 )
 
-const DARK_SECTIONS = '#hero, #craft, #leaf, #process, .farm-statement, #footer-cta, .canvas-layer'
+const DARK_SECTIONS = '#hero, #craft, #leaf, #process, .farm-statement, #footer-cta, .canvas-layer, .ui-band'
 
 // Flips the nav to its dark theme while a dark section sits under the bar.
 function useNavTheme() {

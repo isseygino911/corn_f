@@ -5,10 +5,11 @@ import { Message } from '../auth/ui.jsx'
 import { useAction } from '../auth/useAction.js'
 import { useCart } from '../cart/CartContext.jsx'
 import { formatMoney, useLoad } from '../panel/ui.jsx'
-import ShopShell, { PageTitle } from '../shop/ShopShell.jsx'
+import ShopShell from '../shop/ShopShell.jsx'
 import { Loaded } from '../shop/Shop.jsx'
 import { Button } from '@/ui/button'
 import { Skeleton } from '@/ui/skeleton'
+import { Surface } from '@/ui/surface'
 import { cn } from '@/lib/utils'
 import AddressForm from './AddressForm.jsx'
 import { formatAddress } from './format.js'
@@ -40,7 +41,7 @@ function AddressPicker({ addresses, selectedId, onSelect, onAdd }) {
               role="radio"
               aria-checked={a.id === selectedId}
               onClick={() => onSelect(a.id)}
-              className={cn('tw:flex tw:w-full tw:flex-col tw:gap-1 tw:rounded-2xl tw:border tw:p-4 tw:text-left', a.id === selectedId ? 'tw:border-foreground tw:bg-card' : 'tw:border-border')}
+              className={cn('tw:flex tw:w-full tw:flex-col tw:gap-1 tw:rounded-2xl tw:border-2 tw:p-4 tw:text-left', a.id === selectedId ? 'tw:border-foreground tw:bg-background' : 'tw:border-transparent tw:bg-background/60')}
             >
               <strong className="tw:font-medium">{a.fullName}</strong>
               <span>{formatAddress(a)}</span>
@@ -56,21 +57,21 @@ function AddressPicker({ addresses, selectedId, onSelect, onAdd }) {
 
 function Summary({ quote, shippingEnabled }) {
   return (
-    <aside className="tw:flex tw:h-fit tw:flex-col tw:gap-4 tw:rounded-2xl tw:border tw:border-border tw:bg-card tw:p-5" aria-label="Order summary">
+    <Surface as="aside" tone="dark" className="tw:flex tw:h-fit tw:flex-col tw:gap-4 tw:p-6" aria-label="Order summary">
       <h2 className="tw:text-2xl">Summary</h2>
       <ul className="tw:m-0 tw:flex tw:list-none tw:flex-col tw:gap-3 tw:p-0">
         {quote.data?.lines.map((l, i) => (
           <li key={i} className="tw:flex tw:justify-between tw:gap-3">
             <span>
               {l.quantity} × {l.name}
-              {l.accessories.map((a) => <span key={a.publicId} className="tw:block tw:font-mono tw:text-xs tw:text-muted-foreground tw:uppercase">+ {a.name}</span>)}
+              {l.accessories.map((a) => <span key={a.publicId} className="tw:block tw:font-mono tw:text-xs tw:uppercase tw:opacity-70">+ {a.name}</span>)}
             </span>
             <span>{formatMoney(l.lineCents)}</span>
           </li>
         ))}
       </ul>
-      {quote.data ? <Totals {...quote.data} showShipping={shippingEnabled} /> : !quote.error && <Skeleton className="tw:h-24 tw:w-full" />}
-    </aside>
+      {quote.data ? <Totals {...quote.data} showShipping={shippingEnabled} /> : !quote.error && <Skeleton className="tw:h-24 tw:w-full tw:bg-primary-foreground/20" />}
+    </Surface>
   )
 }
 
@@ -104,8 +105,11 @@ function CheckoutForm({ addresses: initial, shippingEnabled }) {
 
   return (
     <div className="tw:grid tw:w-full tw:grid-cols-1 tw:gap-8 tw:md:grid-cols-[minmax(0,1fr)_360px]">
-      <section className="tw:flex tw:flex-col tw:gap-4">
-        <h2 className="tw:text-2xl">Shipping address</h2>
+      <Surface as="section" tone="sand" className="tw:flex tw:flex-col tw:gap-4 tw:p-5 tw:md:p-8">
+        <h2 className="tw:flex tw:items-center tw:gap-3 tw:text-2xl">
+          <span className="tw:grid tw:size-8 tw:place-items-center tw:rounded-full tw:bg-primary tw:font-mono tw:text-sm tw:text-primary-foreground">1</span>
+          Shipping address
+        </h2>
         <AddressPicker
           addresses={addresses}
           selectedId={selectedId}
@@ -115,12 +119,12 @@ function CheckoutForm({ addresses: initial, shippingEnabled }) {
             setSelectedId(a.id)
           }}
         />
-      </section>
-      <div className="tw:flex tw:flex-col tw:gap-4">
+      </Surface>
+      <div className="tw:flex tw:flex-col tw:gap-4 tw:md:sticky tw:md:top-24 tw:md:self-start">
         <Summary quote={quote} shippingEnabled={shippingEnabled} />
         {quote.error && <Message error>{quote.error.message}</Message>}
         {place.error && <Message error>{place.error.message}</Message>}
-        <Button size="lg" className="tw:h-12" disabled={place.pending || !selectedId || !quote.data} onClick={() => place.run()}>
+        <Button size="lg" className="tw:h-12 tw:bg-accent tw:text-accent-foreground tw:hover:bg-accent/80" disabled={place.pending || !selectedId || !quote.data} onClick={() => place.run()}>
           {place.pending ? 'Placing order…' : 'Place order'}
         </Button>
         <div className="tw:text-sm tw:text-muted-foreground">Payment instructions follow by email. Prices are confirmed when you place the order.</div>
@@ -136,8 +140,7 @@ export default function Checkout() {
   const both = { data: addresses.data && settings.data && { ...addresses.data, ...settings.data }, error: addresses.error ?? settings.error, loading: addresses.loading || settings.loading }
   return (
     <RequireUser>
-      <ShopShell>
-        <PageTitle>Checkout</PageTitle>
+      <ShopShell band={{ eyebrow: 'Almost there', title: 'Checkout', intro: 'Choose where it goes. Payment instructions follow by email.' }}>
         {lines.length ? (
           <Loaded load={both} skeleton={<Skeleton className="tw:h-64 tw:w-full" />}>
             {({ addresses, shippingEnabled }) => <CheckoutForm addresses={addresses} shippingEnabled={shippingEnabled} />}

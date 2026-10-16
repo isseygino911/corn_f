@@ -2,12 +2,13 @@ import { Link, useLocation, useParams } from 'react-router'
 import { Check, X } from 'lucide-react'
 import { api } from '../api.js'
 import { formatMoney, useLoad } from '../panel/ui.jsx'
-import ShopShell, { PageTitle } from '../shop/ShopShell.jsx'
+import ShopShell from '../shop/ShopShell.jsx'
 import { Loaded } from '../shop/Shop.jsx'
 import { Reveal, SuccessCheck } from '../shop/motion.jsx'
 import { Badge } from '@/ui/badge'
 import { Button } from '@/ui/button'
 import { Skeleton } from '@/ui/skeleton'
+import { Surface } from '@/ui/surface'
 import { cn } from '@/lib/utils'
 import { formatAddress } from './format.js'
 import RequireUser from './RequireUser.jsx'
@@ -50,15 +51,14 @@ function Order({ order }) {
   const justPlaced = useLocation().state?.placed
   return (
     <>
-      <div className="tw:flex tw:flex-wrap tw:items-center tw:gap-3">
+      <Surface tone="sage" className="tw:flex tw:flex-wrap tw:items-center tw:gap-4 tw:p-5 tw:md:p-6">
         {justPlaced && <SuccessCheck />}
-        <PageTitle>{order.orderNumber}</PageTitle>
-        <Badge variant={order.status === 'cancelled' ? 'destructive' : 'secondary'}>{order.status}</Badge>
-      </div>
-      <p>Placed {dateTime(order.placedAt)}. A confirmation was sent to {order.email}; payment instructions follow.</p>
-      <Timeline order={order} />
-      <div className="tw:grid tw:w-full tw:grid-cols-1 tw:gap-8 tw:md:grid-cols-[minmax(0,1fr)_320px]">
-        <section className="tw:flex tw:flex-col tw:gap-4">
+        <p className="tw:min-w-0 tw:flex-1">Placed {dateTime(order.placedAt)}. A confirmation was sent to {order.email}; payment instructions follow.</p>
+        <Badge variant={order.status === 'cancelled' ? 'destructive' : 'default'}>{order.status}</Badge>
+      </Surface>
+      <Surface tone="mist" className="tw:p-5 tw:md:p-6"><Timeline order={order} /></Surface>
+      <div className="tw:grid tw:w-full tw:grid-cols-1 tw:gap-6 tw:md:grid-cols-[minmax(0,1fr)_340px]">
+        <Surface as="section" tone="card" className="tw:flex tw:h-fit tw:flex-col tw:gap-4 tw:p-5 tw:md:p-6">
           <h2 className="tw:text-2xl">Items</h2>
           <ul className="tw:m-0 tw:flex tw:list-none tw:flex-col tw:divide-y tw:divide-border tw:p-0">
             {order.items.map((item, i) => (
@@ -74,16 +74,18 @@ function Order({ order }) {
               </li>
             ))}
           </ul>
-        </section>
-        <aside className="tw:flex tw:h-fit tw:flex-col tw:gap-4 tw:rounded-2xl tw:border tw:border-border tw:bg-card tw:p-5">
-          <Totals {...order} />
-          <div>
+        </Surface>
+        <div className="tw:flex tw:h-fit tw:flex-col tw:gap-4">
+          <Surface as="aside" tone="dark" className="tw:flex tw:flex-col tw:gap-4 tw:p-6">
+            <Totals {...order} />
+          </Surface>
+          <Surface tone="sand" className="tw:p-6">
             <h3 className="tw:mb-1 tw:font-mono tw:text-xs tw:uppercase">Ships to</h3>
             <p>{order.address.fullName}</p>
             <p>{formatAddress(order.address)}</p>
             <div className="tw:text-sm tw:text-muted-foreground">{order.address.phone}</div>
-          </div>
-        </aside>
+          </Surface>
+        </div>
       </div>
       <Button asChild variant="outline" className="tw:self-start tw:text-foreground"><Link to="/account/orders">All orders</Link></Button>
     </>
@@ -95,7 +97,7 @@ export default function OrderPage() {
   const load = useLoad(() => api.get(`/orders/${orderNumber}`), [orderNumber])
   return (
     <RequireUser>
-      <ShopShell>
+      <ShopShell band={{ eyebrow: 'Your order', title: load.data?.order.orderNumber ?? orderNumber }}>
         <Loaded load={load} skeleton={<Skeleton className="tw:h-64 tw:w-full" />}>
           {({ order }) => <Order order={order} />}
         </Loaded>

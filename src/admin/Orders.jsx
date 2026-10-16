@@ -65,7 +65,7 @@ const NEXT = { placed: 'shipped', shipped: 'delivered' }
 const CANCELLABLE = ['placed', 'shipped']
 
 const Section = ({ title, children }) => (
-  <section className="tw:flex tw:flex-col tw:gap-2 tw:rounded-2xl tw:border tw:p-4">
+  <section className="tw:flex tw:flex-col tw:gap-2 tw:rounded-3xl tw:bg-card tw:p-5">
     <h3 className="tw:font-mono tw:text-xs tw:uppercase tw:font-normal">{title}</h3>
     {children}
   </section>

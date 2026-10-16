@@ -81,7 +81,7 @@ export default function Addresses() {
           {!addresses.length && <Empty>No saved addresses yet.</Empty>}
           <ul className="tw:m-0 tw:flex tw:list-none tw:flex-col tw:gap-3 tw:p-0">
             {addresses.map((a) => (
-              <li key={a.id} className="tw:flex tw:flex-col tw:gap-2 tw:rounded-2xl tw:border tw:p-4">
+              <li key={a.id} className="tw:flex tw:flex-col tw:gap-2 tw:rounded-3xl tw:bg-card tw:p-5">
                 <p>
                   <strong>{a.fullName}</strong> {a.isDefault && <Badge variant="secondary">Default</Badge>}
                 </p>

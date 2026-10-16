@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { animate, useReducedMotion } from 'motion/react'
 import { api } from '../api.js'
 import { Heading, Loaded, useLoad } from '../panel/ui.jsx'
+import { Surface, TONE_CYCLE } from '@/ui/surface'
 
 // Counts up from 0 on mount; under reduced motion it shows the number straight away.
 function CountUp({ value }) {
@@ -29,11 +30,11 @@ export default function Dashboard() {
               ['Inactive products', d.products.inactive],
               ['Accessories', d.accessories],
               ['Sold out', d.soldOut],
-            ].map(([label, n]) => (
-              <div className="tw:flex tw:flex-col tw:gap-2 tw:rounded-2xl tw:border tw:p-5" key={label}>
+            ].map(([label, n], i) => (
+              <Surface tone={TONE_CYCLE[i % TONE_CYCLE.length]} className="tw:flex tw:flex-col tw:gap-2 tw:p-5" key={label}>
                 <b className="tw:text-[44px] tw:tabular-nums tw:leading-none tw:font-medium tw:tracking-[-0.05em]"><CountUp value={n} /></b>
                 <span className="tw:font-mono tw:text-xs tw:uppercase">{label}</span>
-              </div>
+              </Surface>
             ))}
           </div>
         )}

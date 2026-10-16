@@ -17,6 +17,7 @@ const buttonVariants = cva(
           "tw:bg-secondary tw:text-secondary-foreground tw:hover:bg-secondary/80",
         ghost:
           "tw:hover:bg-accent tw:hover:text-accent-foreground tw:dark:hover:bg-accent/50",
+        invert: "tw:bg-primary-foreground tw:text-primary tw:hover:bg-primary-foreground/90",
         link: "tw:text-primary tw:underline-offset-4 tw:hover:underline",
       },
       size: {
