@@ -15,6 +15,7 @@ export function AuthProvider({ children }) {
     () => ({
       user,
       login: async (credentials) => setUser((await post('/login', credentials)).user),
+      setUser,
       logout: async () => {
         await post('/logout')
         setUser(null)

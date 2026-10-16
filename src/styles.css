@@ -34,7 +34,7 @@ body {
 /* Scroll-driven dark stage (animated by useScrollTimeline). */
 .stage { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: var(--ink); }
 .hero-layer, .leaf, .leaf-veil, .veil { position: absolute; inset: 0; }
-.cob { position: absolute; left: 50vw; top: 9vh; height: 74vh; translate: -50% 0; will-change: transform; }
+.cob { position: absolute; left: 50vw; top: 9vh; height: 74vh; will-change: transform; }
 .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(0.85) brightness(0.5); }
 .parallax, .parallax img { height: 100%; }
 .parallax img { display: block; width: auto; filter: drop-shadow(0 40px 60px rgb(0 0 0 / 0.45)); transition: filter 1.6s ease; }
@@ -276,7 +276,7 @@ p { margin: 0; color: var(--muted); }
   .pin { justify-content: flex-start; padding-top: 14vh; }
   #craft .pin { justify-content: center; padding-top: 0; }
   .cta { gap: 10px; padding-left: 10px; font-size: 12px; }
-  .cob { top: 8vh; height: 52vh; }
+  .cob { top: 14vh; height: 46vh; }
   .harvest-cob { left: 0; right: 0; top: 10vh; width: 100%; height: 44vh; }
   #colorways .pin { justify-content: flex-end; padding-bottom: 8vh; }
   .pick { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 0; }

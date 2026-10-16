@@ -1,4 +1,4 @@
-import { Component, useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { Component, lazy, Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ReactLenis, useLenis } from 'lenis/react'
@@ -18,7 +18,11 @@ import Signup from './auth/Signup.jsx'
 import ForgotPassword from './auth/ForgotPassword.jsx'
 import ResetPassword from './auth/ResetPassword.jsx'
 import VerifyEmail from './auth/VerifyEmail.jsx'
-import Account from './auth/Account.jsx'
+import AccountRoutes from './account/AccountRoutes.jsx'
+import { ProductList, ProductPage } from './shop/Shop.jsx'
+
+// Admin is a separate chunk: only admins ever download it.
+const AdminRoutes = lazy(() => import('./admin/AdminRoutes.jsx'))
 
 const PRELOAD_TIMEOUT_MS = 6000
 
@@ -139,7 +143,10 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/account" element={<Gate signedIn><Account /></Gate>} />
+        <Route path="/account/*" element={<Gate signedIn><AccountRoutes /></Gate>} />
+        <Route path="/admin/*" element={<Gate signedIn admin><Suspense fallback={null}><AdminRoutes /></Suspense></Gate>} />
+        <Route path="/products" element={<ProductList />} />
+        <Route path="/products/:slug" element={<ProductPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>

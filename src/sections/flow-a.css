@@ -104,12 +104,14 @@
   .process-rail { display: none; }
   .process-steps { display: flex; flex-direction: column; gap: 56px; }
   .process-step { position: static; display: flex; flex-direction: column-reverse; align-items: stretch; gap: 20px; opacity: 1; transform: none; pointer-events: auto; transition: none; }
-  .process-img { height: min(100vw, 420px); }
+  .process-img { height: auto; aspect-ratio: 3 / 4; }
+  .process-img[data-cutout='true'] { aspect-ratio: auto; max-height: min(100vw, 420px); }
   .process-num { font-size: 72px; }
   .process-head h2 { font-size: 36px; }
   .collections { padding-top: 80px; padding-bottom: 80px; }
   .cards { grid-template-columns: 1fr; }
   .card { min-height: 460px; }
+  .card-cutout { right: 4%; bottom: 4%; width: 52%; } /* stays inside the card on phones */
   .card h3 { font-size: 28px; max-width: 60%; }
   .farm-statement { padding-top: 96px; padding-bottom: 96px; }
   .farm-statement p { font-size: 18px; }

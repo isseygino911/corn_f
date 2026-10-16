@@ -27,7 +27,7 @@
 .fb-track::-webkit-scrollbar { display: none; }
 .fb-pairing { flex: 0 0 min(100%, 1100px); scroll-snap-align: start; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px; padding: 20px; }
 .fb-panel { position: relative; aspect-ratio: 11 / 9; border-radius: 16px; overflow: hidden; background: var(--rose); }
-.fb-panel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.fb-panel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .fb-panel.is-cutout { background: linear-gradient(160deg, #f6e3e0, #e8c9c4); }
 .fb-panel.is-cutout img { object-fit: contain; padding: 24px; }
 .fb-pairing:nth-child(3n + 2) .is-cutout { background: linear-gradient(160deg, #f4ead3, #e3cf9f); }

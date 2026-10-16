@@ -50,13 +50,16 @@ const parallax = () => {
 // The hero cobs ride an ellipse seen from the front: phase 0 puts the first cob at the front, and each
 // extra turn of progress sends them clockwise (on screen) round it. The front cob is largest and sharpest.
 const ORBIT_TURNS = 1
+const PHONE = matchMedia('(max-width: 809px)')
 const orbit = (progress) => {
   const cobs = gsap.utils.toArray('.cob')
+  const radius = PHONE.matches ? 0.2 : 0.3 // narrower orbit on phones so the side cobs stay on screen
   cobs.forEach((cob, i) => {
     const a = Math.PI / 2 + (i / cobs.length + progress * ORBIT_TURNS) * 2 * Math.PI
     const depth = (Math.sin(a) + 1) / 2 // 1 at the front, 0 at the back
     gsap.set(cob, {
-      x: Math.cos(a) * 0.3 * innerWidth,
+      xPercent: -50, // centres on left: 50vw; a CSS translate would be baked to px before the image has a width
+      x: Math.cos(a) * radius * innerWidth,
       y: (Math.sin(a) - 1) * 0.05 * innerHeight,
       scale: 0.62 + 0.38 * depth,
       filter: `brightness(${0.55 + 0.45 * depth})`,

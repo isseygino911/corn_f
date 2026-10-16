@@ -10,6 +10,7 @@ export default function NavAuth({ onNavigate }) {
     <div className="nav-auth">
       {user ? (
         <>
+          {user.isAdmin && <Link to="/admin" onClick={onNavigate}>Admin</Link>}
           <Link className="nav-user" to="/account" onClick={onNavigate}>{user.name}</Link>
           <SignOutButton className="pill" onNavigate={onNavigate} />
         </>
