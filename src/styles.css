@@ -1,0 +1,294 @@
+:root {
+  /* Palette sampled from the product photos: aubergine kernels, warmed gray backdrop, blush kernels, cap gold. */
+  --bg: #f5f0ea;
+  --ink: #231a29;
+  --rose: #e8b7b0;
+  --gold: #c9a14a;
+  --slate: #5b6378;
+  --moss: #6f7a4e;
+  --muted: #6b645a;
+  --gutter: 28px;
+  --sans: 'Geist', system-ui, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* Reduced-motion hero: the ember cutout floating in the dark. */
+.canvas-layer { height: 60vh; padding: 12vh 8vw 0; background: var(--ink); }
+.poster { width: 100%; height: 100%; object-fit: contain; }
+
+/* Scroll-driven dark stage (animated by useScrollTimeline). */
+.stage { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: var(--ink); }
+.hero-layer, .leaf, .leaf-veil, .veil { position: absolute; inset: 0; }
+.cob { position: absolute; left: 50vw; top: 9vh; height: 74vh; translate: -50% 0; will-change: transform; }
+.hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(0.85) brightness(0.5); }
+.parallax, .parallax img { height: 100%; }
+.parallax img { display: block; width: auto; filter: drop-shadow(0 40px 60px rgb(0 0 0 / 0.45)); transition: filter 1.6s ease; }
+.stage:not(.ready) .parallax img { filter: brightness(0.1); }
+.hero-layer { isolation: isolate; }
+.veil { background: var(--ink); opacity: 0; z-index: 20; }
+/* Darkens the lower scene under the headline. */
+.hero-layer::after { content: ''; z-index: 15; position: absolute; inset: 0; background: linear-gradient(0deg, var(--ink) 0%, color-mix(in srgb, var(--ink) 80%, transparent) 30%, transparent 62%); }
+
+/* Leaf macro (shared 3:2 box so the hotspots land on the same drops as the photo). */
+.leaf-art { position: absolute; left: 50%; top: 50%; width: max(100vw, 150vh); aspect-ratio: 3 / 2; transform: translate(-50%, -50%); }
+.leaf-art img { width: 100%; height: 100%; }
+.leaf-veil { background: linear-gradient(90deg, color-mix(in srgb, var(--ink) 80%, transparent) 0%, color-mix(in srgb, var(--ink) 25%, transparent) 60%); }
+
+
+#story { position: relative; z-index: 1; color: var(--bg); }
+
+.beat { position: relative; }
+.pin {
+  position: fixed;
+  inset: 0;
+  height: 100vh;
+  padding: 0 var(--gutter);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  pointer-events: none;
+}
+.pin > * { pointer-events: auto; }
+.pin.left { align-items: flex-start; }
+.pin.center { align-items: center; text-align: center; }
+.pin > :not(.chip) { max-width: 520px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pin.center .chips { justify-content: center; }
+#story p { color: color-mix(in srgb, var(--bg) 78%, transparent); }
+#story .chip-rose { color: var(--ink); }
+/* Soft scrim keeps the craft text legible over the zoomed kernels. */
+#craft .pin { background: radial-gradient(ellipse at center, color-mix(in srgb, var(--ink) 70%, transparent) 0%, transparent 70%); }
+
+/* Hidden until the timeline fades them in; the hero rises in after the intro. */
+#story:not(.static) .beat:not(#hero) .pin { opacity: 0; visibility: hidden; }
+#story:not(.static) #hero .pin > * { opacity: 0; transform: translateY(24px); transition: opacity 1s ease, transform 1s ease; }
+.ready ~ #story #hero .pin > * { opacity: 1; transform: none; }
+.ready ~ #story #hero .pin > :nth-child(2) { transition-delay: 0.15s; }
+.ready ~ #story #hero .pin > :nth-child(3) { transition-delay: 0.3s; }
+.ready ~ #story #hero .pin > :nth-child(n + 4) { transition-delay: 0.45s; }
+
+#hero .pin.mid { justify-content: center; }
+#hero .pin.top { justify-content: flex-start; padding-top: 15vh; }
+#hero .pin.bottom { justify-content: flex-end; padding-bottom: 14vh; }
+#hero h1 { max-width: 900px; font-size: clamp(56px, 7.2vw, 120px); }
+@media (min-width: 810px) {
+  #hero .pin.center h1 { max-width: none; font-size: clamp(56px, 6vw, 100px); white-space: nowrap; }
+}
+
+h1, h2 {
+  margin: 0;
+  font-weight: 500;
+  font-size: 72px;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+p { margin: 0; color: var(--muted); }
+
+:focus-visible { outline: 2px solid var(--rose); outline-offset: 3px; }
+
+.chip {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 1;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+.chip-rose { background: var(--rose); color: var(--ink); }
+.chip-mono { border: 1px solid currentColor; }
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding-left: 14px;
+  font: 500 13px/1 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid currentColor;
+}
+.cta-icon { display: grid; place-items: center; width: 36px; height: 36px; margin: -1px; background: var(--rose); color: var(--ink); }
+
+/* Fixed frosted nav; flips theme with the section under it (see Nav.jsx). */
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px var(--gutter);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(12px);
+  transition: background 0.3s ease, color 0.3s ease;
+  font-family: var(--mono);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+.nav[data-theme='dark'] { color: var(--bg); background: color-mix(in srgb, var(--ink) 55%, transparent); }
+.nav a { color: inherit; text-decoration: none; }
+.nav-brand { font: 500 18px/1 var(--sans); text-transform: none; letter-spacing: -0.03em; }
+.nav-links { display: flex; gap: 32px; list-style: none; margin: 0; padding: 0; }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+.menu-btn, .menu { display: none; }
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 16px;
+  font: 500 13px/1 var(--mono);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: inherit;
+  text-decoration: none;
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.pill:hover:not(:disabled) { background: var(--rose); border-color: var(--rose); color: var(--ink); }
+.pill:disabled { opacity: 0.5; cursor: default; }
+.pill-solid { padding: 16px 22px; color: var(--bg); background: var(--ink); border-color: var(--ink); }
+.pill-wide { padding: 16px 22px; }
+.nav-auth { display: flex; align-items: center; gap: 12px; }
+.nav-user { max-width: 16ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.flow { position: relative; z-index: 2; background: var(--bg); }
+
+.scroll-hint {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+/* Leaf scene: big paragraph left, pulsing rose hotspots over the drops. */
+.mono-label { font: 400 12px/1.3 var(--mono); text-transform: uppercase; letter-spacing: 0; }
+#leaf .pin { justify-content: flex-start; padding-top: 18vh; }
+#leaf h2 { max-width: 640px; font-size: clamp(36px, 3.8vw, 60px); }
+#leaf .pin > .leaf-art { max-width: none; position: absolute; pointer-events: none; padding: 0; margin: 0; list-style: none; }
+.hotspot { position: absolute; display: flex; align-items: center; gap: 10px; margin: -18px 0 0 -18px; font: 400 11px/1.25 var(--mono); text-transform: uppercase; letter-spacing: 0; }
+.hotspot i { position: relative; flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--rose); }
+.hotspot i::before { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--rose); animation: pulse 2.4s ease-out infinite; }
+.hotspot i::after { content: ''; position: absolute; inset: 14px; border-radius: 50%; background: var(--ink); }
+.hotspot span { max-width: 130px; }
+@keyframes pulse { to { transform: scale(2); opacity: 0; } }
+
+/* Colorways: light studio stage, the cob on the right, a numbered picker on the left. */
+.harvest { position: absolute; inset: 0; }
+.harvest-cob { position: absolute; right: 4vw; top: 8vh; width: 52vw; height: 86vh; object-fit: contain; mix-blend-mode: multiply; }
+#colorways .pin { color: var(--ink); justify-content: center; }
+#colorways h2 { font-size: clamp(44px, 5vw, 80px); max-width: 640px; }
+#story #colorways p { color: color-mix(in srgb, var(--ink) 70%, transparent); }
+.pick { list-style: none; margin: 12px 0 0; padding: 0; }
+.pick button { all: unset; box-sizing: border-box; display: flex; align-items: baseline; gap: 18px; cursor: pointer; font: 500 clamp(34px, 3.6vw, 56px)/1.15 var(--sans); letter-spacing: -0.05em; opacity: 0.28; transition: opacity 0.3s ease; }
+.pick button span { font: 500 13px/1 var(--mono); letter-spacing: 0; }
+.pick button:hover { opacity: 0.6; }
+.pick button[aria-pressed='true'] { opacity: 1; }
+.pick button:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.pick-info { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; animation: rise 0.5s ease; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+.dots { display: flex; }
+.dots i { width: 22px; height: 22px; border-radius: 50%; margin-left: -6px; border: 1.5px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+.dots i:first-child { margin-left: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hotspot i::before { animation: none; }
+}
+
+/* Reduced motion: native scroll, no pinning, no animation */
+#story.static { background: var(--ink); }
+#story.static #colorways .pin { background: var(--bg); color: var(--ink); }
+#story.static .pin { position: relative; inset: auto; height: auto; padding-top: 12vh; padding-bottom: 12vh; }
+#story.static .scroll-hint, #story.static #leaf .pin > .leaf-art, #story.static .hotspot { position: static; }
+#story.static #leaf .pin > .leaf-art { display: flex; flex-wrap: wrap; gap: 20px; width: auto; aspect-ratio: auto; transform: none; pointer-events: auto; }
+#story.static #leaf .pin { background: linear-gradient(color-mix(in srgb, var(--ink) 70%, transparent), color-mix(in srgb, var(--ink) 70%, transparent)), url('/photos/nature-dew.jpg') center / cover; }
+#story.static .hotspot { margin: 0; }
+.static-shot { width: min(100%, 360px); aspect-ratio: 3 / 4; object-fit: cover; border-radius: 20px; }
+
+@media (max-width: 809px) {
+  :root { --gutter: 16px; }
+  h1, h2 { font-size: 44px; }
+  #hero h1 { font-size: 52px; }
+  #leaf h2 { font-size: 34px; }
+  /* Phone: the photo is cropped hard, so hotspots become a 2×2 legend under the copy instead of pins on drops. */
+  .leaf-veil { background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 88%, transparent) 0%, color-mix(in srgb, var(--ink) 55%, transparent) 50%, color-mix(in srgb, var(--ink) 85%, transparent) 100%); }
+  #leaf .pin > .leaf-art { position: static; width: auto; aspect-ratio: auto; transform: none; display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; margin-top: auto; margin-bottom: 7vh; }
+  #leaf .hotspot { position: static; margin: 0; }
+  #leaf .hotspot i { width: 28px; height: 28px; }
+  #leaf .hotspot i::after { inset: 10px; }
+  .nav-links, .nav-actions .nav-auth { display: none; }
+  .nav.open { color: var(--bg); background: transparent; backdrop-filter: none; }
+  .nav.open .nav-actions .cta { visibility: hidden; }
+  .menu-btn { display: flex; align-items: center; gap: 10px; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-transform: inherit; cursor: pointer; }
+  .menu-icon { position: relative; width: 20px; height: 10px; }
+  .menu-icon::before, .menu-icon::after { content: ''; position: absolute; left: 0; width: 100%; height: 1.5px; background: currentColor; transition: transform 0.3s ease, top 0.3s ease; }
+  .menu-icon::before { top: 0; }
+  .menu-icon::after { top: 9px; }
+  .menu-btn[aria-expanded='true'] .menu-icon::before { top: 4px; transform: rotate(45deg); }
+  .menu-btn[aria-expanded='true'] .menu-icon::after { top: 4px; transform: rotate(-45deg); }
+  /* Overlay sits under the nav bar (z 3) so the close button stays on top. */
+  .menu {
+    position: fixed; inset: 0; z-index: 2;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 96px var(--gutter) 28px;
+    background: var(--ink); color: var(--bg);
+    visibility: hidden; opacity: 0; transform: translateY(-12px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s;
+  }
+  .menu.open { visibility: visible; opacity: 1; transform: none; transition-delay: 0s; }
+  .menu ul { list-style: none; margin: 0; padding: 0; }
+  .menu li a { display: block; padding: 10px 0; color: inherit; text-decoration: none; font: 500 44px/1.1 var(--sans); letter-spacing: -0.04em; }
+  .menu-foot { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+  .menu-foot p { margin: 0; font: 400 11px/1.3 var(--mono); text-transform: uppercase; letter-spacing: 0; opacity: 0.6; }
+  .menu-foot .cta { color: var(--bg); }
+  .menu-foot .nav-auth { flex-wrap: wrap; gap: 12px 16px; font-size: 16px; }
+  .pin > :not(.chip) { max-width: 100%; }
+  .pin { justify-content: flex-start; padding-top: 14vh; }
+  #craft .pin { justify-content: center; padding-top: 0; }
+  .cta { gap: 10px; padding-left: 10px; font-size: 12px; }
+  .cob { top: 8vh; height: 52vh; }
+  .harvest-cob { left: 0; right: 0; top: 10vh; width: 100%; height: 44vh; }
+  #colorways .pin { justify-content: flex-end; padding-bottom: 8vh; }
+  .pick { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 0; }
+  .pick button { font-size: 28px; }
+  .scroll-hint { left: var(--gutter); right: auto; }
+}
+
+@media (max-width: 420px) {
+  .nav-actions .cta { padding-left: 0; }
+  .nav-actions .cta span { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu, .menu-icon::before, .menu-icon::after, .pill { transition: none; }
+}
