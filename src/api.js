@@ -1,3 +1,6 @@
+// Empty in development (Vite proxies /api); production builds set VITE_API_URL to the API host.
+export const API_URL = import.meta.env.VITE_API_URL ?? ''
+
 export class ApiError extends Error {
   constructor(message, code) {
     super(message)
@@ -8,8 +11,9 @@ export class ApiError extends Error {
 async function request(method, path, body) {
   let res
   try {
-    res = await fetch(`/api${path}`, {
+    res = await fetch(`${API_URL}/api${path}`, {
       method,
+      credentials: 'include',
       headers: body ? { 'Content-Type': 'application/json' } : undefined,
       body: body && JSON.stringify(body),
     })

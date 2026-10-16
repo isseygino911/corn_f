@@ -1,3 +1,4 @@
+import { API_URL } from '../api.js'
 import { post } from './api.js'
 import { useAction } from './useAction.js'
 import Nav from '../sections/Nav.jsx'
@@ -52,7 +53,7 @@ export function Form({ submit, onSubmit, children }) {
 }
 
 export const GoogleButton = () => (
-  <a className="pill pill-wide" href="/api/auth/google">
+  <a className="pill pill-wide" href={`${API_URL}/api/auth/google`}>
     Continue with Google
   </a>
 )
